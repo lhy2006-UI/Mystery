@@ -1,0 +1,24 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build APK with Buildozer Docker
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE":/home/user/hostcwd \
+            kivy/buildozer \
+            sh -c "yes | buildozer android debug"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mystery-revival-apk
+          path: bin/*.apk
+          retention-days: 30
